@@ -1,97 +1,92 @@
-//Show the current date
-//Since day and month return a number, pull full names from an array for each
-var today = new Date();
-var currDate = "";
-var showDate = document.getElementById("date");
-var dd = today.getDate();
-var yyyy = today.getFullYear();
+Vue.component('date', {
+    computed: {
+        formatDate() {
+            var today = new Date();
+            var dd = today.getDate();
+            var yyyy = today.getFullYear();
 
-var day = ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-var month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+            var day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-currDate = (day[today.getDay()] + ' ' + month[today.getMonth()]+ ' ' + dd + ', ' + yyyy);
-showDate.innerHTML = currDate;
-console.log(currDate);
+            return currDate = (day[today.getDay()] + ' ' + month[today.getMonth()] + ' ' + dd + ', ' + yyyy);
+        }
+    },
+    template: `<h1>{{ formatDate }}</h1>`
+})
 
-//Show the current military time
-//Since minutes and seconds are a single digit under 10, add a zero
-function getMilitaryTime() {
-    var today = new Date();
-    var currTime = "";
-    var showTime = document.getElementById('timeMilitary');
-    var hour = today.getHours();
-    var min = today.getMinutes();
-    var sec = today.getSeconds();
-    if (min < 10)
-    {
-        min = "0" + min
+var clock = new Vue({
+    el: '#app',
+    data: {
+        currentTime: new Date(),
+        interval: null,
+        time_str: "",
+        standardTime: "",
+        isMilitary: true
+    },
+    methods: {
+        displayTime() {
+            this.interval = setInterval(() => {
+                this.currentTime = new Date();
+                
+                if(this.isMilitary){
+                    this.time_str = this.getTime;
+                }
+                else{
+                    this.time_str = this.getStandardTime;
+                }
+                
+            }, 1000)
+        }
+    },
+    beforeDestroy() {
+        clearInterval(this.interval);
+    },
+    created() {
+        this.displayTime();
+    },
+    computed: {
+        hrs() {
+            if (this.currentTime.getHours() < 10) {
+                return '0' + this.currentTime.getHours()
+            }
+            else return this.currentTime.getHours()
+        },
+        standardHrs() {
+            if (this.currentTime.getHours() >= 13) {
+                return this.currentTime.getHours() - 12
+            }
+            else if (this.currentTime.getHours() == 0) {
+                return 12
+            }
+            else {
+                return this.currentTime.getHours()
+            }
+        },
+        meridiem() {
+            if (this.currentTime.getHours() >= 12) {
+                return "PM"
+            }
+            else if (this.currentTime.getHours() >= 0 && this.currentTime.getHours() < 12) {
+                return "AM"
+            }
+        },
+        mins() {
+            if (this.currentTime.getMinutes() < 10) {
+                return '0' + this.currentTime.getMinutes()
+            }
+            else return this.currentTime.getMinutes()
+        },
+        sec() {
+            if (this.currentTime.getSeconds() < 10) {
+                return '0' + this.currentTime.getSeconds()
+            }
+            else return this.currentTime.getSeconds()
+        },
+        getTime() {
+            return this.hrs + ":" + this.mins + ":" + this.sec
+        },
+        getStandardTime() {
+            return this.standardHrs + ":" + this.mins + ":" + this.sec + " " + this.meridiem
+        }
     }
-    if (sec < 10)
-    {
-        sec = "0" + sec
-    }
-    currTime = (hour + ':' + min + ':' + sec)
-    showTime.innerHTML = currTime;
-
-    setTimeout("getMilitaryTime()",500);
-}
-getMilitaryTime();
-
-//Show the current standard time
-//Account for pm hours (13+), 12am, and showing am vs pm
-//Since minutes and seconds are a single digit under 10, add a zero
-function getStandardTime() {
-    var today = new Date();
-    var currTime = "";
-    var showTime = document.getElementById('timeStandard');
-    var hour = today.getHours();
-    var min = today.getMinutes();
-    var sec = today.getSeconds();
-    var amPM = " ";
-    if (hour >= 13)
-    {
-        hour = hour - 12
-        amPM = "PM"
-    }
-    else if (hour == 0)
-    {
-        hour = hour
-        amPM = "AM"
-    }
-    else
-    {
-        hour = hour
-        amPM = "AM"
-    }
-    if (min < 10)
-    {
-        min = "0" + min
-    }
-    if (sec < 10)
-    {
-        sec = "0" + sec
-    }
-    currTime = (hour + ':' + min + ':' + sec + " " + amPM)
-    showTime.innerHTML = currTime;
-
-    setTimeout("getStandardTime()",500);
-}
-getStandardTime();
-
-//Show/hid div around each time depending on button click
-function switchTime() {
-    var x = document.getElementById("militaryTime");
-    var y = document.getElementById("standardTime");
-    if (x.style.display == "none") {
-        x.style.display = "block";
-    }
-    else {
-        x.style.display = "none";
-    }
-    if (y.style.display == "none") {
-        y.style.display = "block";
-    }
-    else {
-        y.style.display = "none";
-    }
-}
+})

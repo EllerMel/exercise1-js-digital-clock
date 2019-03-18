@@ -12,28 +12,27 @@
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
-    <div class="container">
-        <h1 id="date"></h1>
-        <br>
-        <div>
-            <div class="border border-info rounded border-10">
-                <div id="militaryTime" style="display:none;">
-                    <div class="time" id="timeMilitary"></div>
-                </div>
-                <div id="standardTime">
-                    <div class="time" id="timeStandard"></div>
+    <div id="app">
+        <div class="container">
+            <date></date>
+            <br>
+            <div>
+                <div class="border border-info rounded border-10">
+                    <div id="militarytime" class="time">
+                        <h1>{{ time_str }}</h1>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <br>
-    <div class="center">
-        <button class="btn btn-info" onclick="switchTime()">Time Format</button>
+        <br>
+        <div class="center">
+            <button class="btn btn-info" @click="isMilitary = !isMilitary">Time Format</button>
+        </div>
     </div>
 
-
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <!-- Optional JavaScript -->
     <script src="/js/main.js"></script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
